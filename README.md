@@ -1,5 +1,3 @@
-# vision_system
-
 # Realsense Class
 
 This Python class, named `Realsense`, is designed for subscribing to RealSense camera topics such as color and depth frames. It utilizes ROS (Robot Operating System) for communication and OpenCV for image processing. The class simplifies the acquisition of camera frames, camera parameter retrieval, and deprojection of image coordinates into 3D camera space.
