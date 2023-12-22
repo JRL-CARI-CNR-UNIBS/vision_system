@@ -262,9 +262,11 @@ class Realsense:
         Returns:
             np.ndarray: [x, y, z] in camera frame (m)
         """
+        if not self.cameraInfoReceived:
+            print("Initialization not performed. Performing initialization.")
+            self.initialize()
         if not self._valid_pixel(x,y):
             raise ValueError("Coordinates x and y must be integers & inside image.")
-        
         if depth is None:
             if update_frame or self.frame_distance is None:
                 self.acquireOnceBoth()            
