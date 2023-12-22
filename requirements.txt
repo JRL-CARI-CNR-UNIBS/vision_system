@@ -5,6 +5,6 @@ numpy>=1.22.2
 opencv-python>=4.5.5.64
 rospkg>=1.5.0
 rospy>=1.16.0
-rospy-message-converter>=0.5.9
+rospy-message-converter
 rosservice>=1.16.0
 cv-bridge>=1.16.2
