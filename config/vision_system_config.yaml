@@ -1,0 +1,12 @@
+vision_system_node:
+  ros__parameters:
+    color_image_topic: "/camera/image_raw"
+    depth_image_topic: "camera/depth"
+    camera_info_topic: "/camera/camera_info"
+
+    post_processing:
+      package: "vision_system"
+      module: "post_processing"
+      class: "PostProcessing"
+
+  
