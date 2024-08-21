@@ -120,18 +120,18 @@ class Camera(Node):
 
     def acquire_frames_once(self):
       retrieved_color, color_frame = rclpy.wait_for_message.wait_for_message(
-            Image, self, self.color_image_topic, time_to_wait=3.0
+            Image, self, self.color_image_topic, time_to_wait=3
         )
       retrieved_depth, depth_frame = rclpy.wait_for_message.wait_for_message(
-            Image, self, self.depth_image_topic, time_to_wait=3.0
+            Image, self, self.depth_image_topic, time_to_wait=3
         )
       
       if not retrieved_color or not retrieved_depth:
         self.get_logger().error('Failed to retrieve frames.')
-        return None
+        return None, None
 
       if not self._convert_frames(color_frame, depth_frame):
-        return None
+        return None, None
 
       return self.color_frame.copy(), self.distance_frame.copy()
     
@@ -139,7 +139,7 @@ class Camera(Node):
       color_frame, distance_frame = self.acquire_frames_once()
       if color_frame is None or distance_frame is None:
         return None
-      if self.post_processing is None:
+      if self.post_processing is not None:
         self.post_processing.process_frames(color_frame, distance_frame)
            
     def set_processing_function(self, package_name, module_name, class_name):
@@ -196,3 +196,7 @@ class Camera(Node):
     
     def get_distance_frame(self):
       return self.distance_frame.copy()
+
+    def get_frame_id(self):
+      #TODO(@kalman): Implement
+      pass

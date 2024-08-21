@@ -16,6 +16,7 @@
 import pytest
 import rclpy
 from rclpy.node import Node
+import rclpy.qos as qos
 from rosbags.rosbag2 import Reader
 from rosbags.serde import deserialize_cdr
 from sensor_msgs.msg import CameraInfo, Image
@@ -25,6 +26,10 @@ from setuptools import find_packages
 import os
 import threading, time
 import numpy as np
+from rclpy.qos import QoSProfile
+from rclpy.qos import QoSHistoryPolicy
+from rclpy.qos import QoSDurabilityPolicy
+from rclpy.qos import QoSReliabilityPolicy
 
 COLOR_FRAME_TOPIC_NAME_TEST = '/head_front_camera/rgb/image_raw'
 DEPTH_FRAME_TOPIC_NAME_TEST = '/head_front_camera/depth_registered/image_raw'
@@ -33,6 +38,14 @@ CAMERA_INFO_TOPIC_NAME_TEST = '/head_front_camera/depth_registered/camera_info'
 class FakeCamera(Node):
     def __init__(self):
         super().__init__('bag_publisher')
+        #define a qos transient local
+        # self.qos = QoSProfile(depth=10)
+        qos = QoSProfile(
+            # reliability=QoSReliabilityPolicy.BEST_EFFORT,
+            history=QoSHistoryPolicy.KEEP_LAST,
+            durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
+            depth=1
+        )
         self.camera_info_pub = self.create_publisher(CameraInfo, CAMERA_INFO_TOPIC_NAME_TEST, 10)
         self.color_image_pub = self.create_publisher(Image, COLOR_FRAME_TOPIC_NAME_TEST, 10)
         self.depth_image_pub = self.create_publisher(Image, DEPTH_FRAME_TOPIC_NAME_TEST, 10)
@@ -95,6 +108,16 @@ class FakeCamera(Node):
         pub_thread = threading.Thread(target=self.publish_messages, args=(True,))
         pub_thread.start()
 
+    def publish_camera_info_after_a_while(self):
+        pub_thread = threading.Thread(target=self.publish_camera_info)
+        pub_thread.start()
+        
+    def publish_camera_info(self):
+        time.sleep(0.5)
+        timestamp = self.get_clock().now().to_msg()
+        self.camera_info_msg.header.stamp = timestamp
+        self.camera_info_pub.publish(self.camera_info_msg)
+
     def _publish(self, wait: bool = False):
         if wait:
           time.sleep(0.3)
@@ -107,15 +130,21 @@ class FakeCamera(Node):
         self.color_image_pub.publish(self.color_image_msg)
         self.depth_image_pub.publish(self.depth_image_msg)
 
+@pytest.mark.dependency(name="setUp")
+def test_setup():
+    rclpy.init()
 
-def test_camera_as_class_color_frame():
-    fake_camera = FakeCamera()
+@pytest.fixture
+def fake_camera():
+    return FakeCamera()
+
+@pytest.mark.dependency(name="camera_as_class_color", depends=["setUp"])
+def test_camera_as_class_color_frame(fake_camera):
     camera = Camera(
         color_image_topic=COLOR_FRAME_TOPIC_NAME_TEST,
         depth_image_topic=DEPTH_FRAME_TOPIC_NAME_TEST,
         camera_info_topic=CAMERA_INFO_TOPIC_NAME_TEST
     )
-    
     fake_camera.publish_messages_after_a_while()
     color_frame = camera.acquire_color_frame_once()
      
@@ -125,17 +154,18 @@ def test_camera_as_class_color_frame():
     # Assert that the color frame is of type Image
     assert isinstance(color_frame, np.ndarray), "The color frame should be of type Image"
 
-def test_camera_as_class_color_and_depth_frames():
-    fake_camera = FakeCamera()
+@pytest.mark.dependency(name="camera_as_class_color_and_depth", depends=["setUp", "camera_as_class_color"])
+def test_camera_as_class_color_and_depth_frames(fake_camera):
     camera = Camera(
         color_image_topic=COLOR_FRAME_TOPIC_NAME_TEST,
         depth_image_topic=DEPTH_FRAME_TOPIC_NAME_TEST,
         camera_info_topic=CAMERA_INFO_TOPIC_NAME_TEST
     )
-    
     fake_camera.publish_messages_after_a_while()
+    fake_camera.publish_messages_after_a_while()  # Is necessary to publish the messages twice since color wait for message spin consume also depth message
+
     color_frame, distance_frame = camera.acquire_frames_once()
-     
+    
     # Assert that the color frame is not None
     assert color_frame is not None, "The color frame should not be None"
     assert distance_frame is not None, "The distance_frame should not be None"
@@ -144,10 +174,73 @@ def test_camera_as_class_color_and_depth_frames():
     assert isinstance(color_frame, np.ndarray), "The color frame should be of type Image"
     assert isinstance(distance_frame, np.ndarray), "The distance_frame should be of type Image"
 
+@pytest.mark.dependency(name="camera_post_processing_loading", depends=["setUp", "camera_as_class_color", "camera_as_class_color_and_depth"])
+def test_camera_post_processing_loading():
+    camera = Camera(
+        color_image_topic=COLOR_FRAME_TOPIC_NAME_TEST,
+        depth_image_topic=DEPTH_FRAME_TOPIC_NAME_TEST,
+        camera_info_topic=CAMERA_INFO_TOPIC_NAME_TEST
+    )
+    with pytest.raises(Exception):
+      camera.set_processing_function(package_name='wrong',
+                                module_name='wrong',
+                                class_name='wrong')
 
-if __name__ == '__main__':
-    rclpy.init()
-    # pytest.main()
-    test_camera_as_class_color_frame()
-    test_camera_as_class_color_and_depth_frames()
-    # rclpy.shutdown()
+# @pytest.mark.dependency(name="camera_post_processing", depends=["setUp", "camera_as_class_color", "camera_as_class_color_and_depth", "camera_post_processing_loading"])
+# def test_camera_as_class_with_post_processing(capsys, fake_camera):
+#     camera = Camera(
+#         color_image_topic=COLOR_FRAME_TOPIC_NAME_TEST,
+#         depth_image_topic=DEPTH_FRAME_TOPIC_NAME_TEST,
+#         camera_info_topic=CAMERA_INFO_TOPIC_NAME_TEST
+#     )
+    
+#     try:
+#       camera.set_processing_function(package_name='test',
+#                                 module_name='post_processing_example',
+#                                 class_name='YOLOMock')
+#     except (Exception, TypeError):
+#         pytest.fail("The set_processing_function should not raise an exception")
+#     fake_camera.publish_messages_after_a_while()
+#     fake_camera.publish_messages_after_a_while()
+#     fake_camera.publish_messages_after_a_while()
+#     fake_camera.publish_messages_after_a_while()
+#     fake_camera.publish_messages_after_a_while()
+#     camera.process_once()
+#     captured = capsys.readouterr()
+#     assert captured.out == 'Put post processing code here.\nExample of post processing: (480, 640, 3), (480, 640)\n'
+
+# @pytest.mark.dependency(name="camera_node_parameters", depends=["setUp", "camera_post_processing"])
+# def test_camera_node_parameters():
+#     camera = Camera()
+#     camera.set_parameters([rclpy.parameter.Parameter('color_image_topic', rclpy.Parameter.Type.STRING, COLOR_FRAME_TOPIC_NAME_TEST),
+#                            rclpy.parameter.Parameter('depth_image_topic', rclpy.Parameter.Type.STRING, DEPTH_FRAME_TOPIC_NAME_TEST),
+#                            rclpy.parameter.Parameter('camera_info_topic', rclpy.Parameter.Type.STRING, CAMERA_INFO_TOPIC_NAME_TEST)])
+#     assert camera.get_parameter('color_image_topic').get_parameter_value().string_value == COLOR_FRAME_TOPIC_NAME_TEST
+#     assert camera.get_parameter('depth_image_topic').get_parameter_value().string_value == DEPTH_FRAME_TOPIC_NAME_TEST
+#     assert camera.get_parameter('camera_info_topic').get_parameter_value().string_value == CAMERA_INFO_TOPIC_NAME_TEST
+
+# @pytest.mark.dependency(depends=["setUp"])
+# def test_camera_node(fake_camera):
+#     camera = Camera()
+
+#     camera.set_parameters([rclpy.parameter.Parameter('color_image_topic', rclpy.Parameter.Type.STRING, COLOR_FRAME_TOPIC_NAME_TEST),
+#                            rclpy.parameter.Parameter('depth_image_topic', rclpy.Parameter.Type.STRING, DEPTH_FRAME_TOPIC_NAME_TEST),
+#                            rclpy.parameter.Parameter('camera_info_topic', rclpy.Parameter.Type.STRING, CAMERA_INFO_TOPIC_NAME_TEST)])
+    
+#     executor = rclpy.executors.MultiThreadedExecutor()
+#     executor.add_node(camera)
+#     executor.add_node(fake_camera)
+
+#     k = 0
+#     while k < 10:
+#         fake_camera.publish_camera_info_after_a_while()
+#         fake_camera.publish_messages()
+#         color_frame = camera.acquire()
+#         print("Here")
+#         executor.spin_once()
+#         print("QUI")
+#         k += 1
+#     print(color_frame)
+#     print("fdsfdsfds")
+#     print(camera.get_frames())
+    
