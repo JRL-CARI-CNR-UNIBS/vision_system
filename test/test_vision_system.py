@@ -1,0 +1,153 @@
+
+# Copyright 2024 National Research Council STIIMA
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import pytest
+import rclpy
+from rclpy.node import Node
+from rosbags.rosbag2 import Reader
+from rosbags.serde import deserialize_cdr
+from sensor_msgs.msg import CameraInfo, Image
+from std_msgs.msg import Header
+from vision_system.camera import Camera
+from setuptools import find_packages
+import os
+import threading, time
+import numpy as np
+
+COLOR_FRAME_TOPIC_NAME_TEST = '/head_front_camera/rgb/image_raw'
+DEPTH_FRAME_TOPIC_NAME_TEST = '/head_front_camera/depth_registered/image_raw'
+CAMERA_INFO_TOPIC_NAME_TEST = '/head_front_camera/depth_registered/camera_info'
+
+class FakeCamera(Node):
+    def __init__(self):
+        super().__init__('bag_publisher')
+        self.camera_info_pub = self.create_publisher(CameraInfo, CAMERA_INFO_TOPIC_NAME_TEST, 10)
+        self.color_image_pub = self.create_publisher(Image, COLOR_FRAME_TOPIC_NAME_TEST, 10)
+        self.depth_image_pub = self.create_publisher(Image, DEPTH_FRAME_TOPIC_NAME_TEST, 10)
+        
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        bag_path = os.path.join(current_dir, 'test_bag')  
+
+        self.camera_info_msg = None
+        self.color_image_msg = None
+        self.depth_image_msg = None
+        with Reader(bag_path) as reader:
+          reader.open()
+
+          timestamp_msg = self.get_clock().now().to_msg()
+          for connection, timestamp, rawdata in reader.messages():
+              if connection.topic == CAMERA_INFO_TOPIC_NAME_TEST and self.camera_info_msg is None:
+                  camera_info = deserialize_cdr(rawdata, connection.msgtype)
+                  self.camera_info_msg = CameraInfo()
+                  self.camera_info_msg.header = Header()
+                  self.camera_info_msg.header.stamp = timestamp_msg
+                  self.camera_info_msg.header.frame_id = camera_info.header.frame_id
+                  self.camera_info_msg.height = camera_info.height
+                  self.camera_info_msg.width = camera_info.width
+                  self.camera_info_msg.distortion_model = camera_info.distortion_model
+                  self.camera_info_msg.d = [float(value) for value in camera_info.d]
+                  self.camera_info_msg.k = camera_info.k
+                  self.camera_info_msg.r = camera_info.r
+                  self.camera_info_msg.p = camera_info.p
+                  self.camera_info_msg.binning_x = camera_info.binning_x
+                  self.camera_info_msg.binning_y = camera_info.binning_y
+              elif connection.topic == COLOR_FRAME_TOPIC_NAME_TEST and self.color_image_msg is None:
+                  color_image = deserialize_cdr(rawdata, connection.msgtype)
+                  self.color_image_msg = Image()
+                  self.color_image_msg.header = Header()
+                  self.color_image_msg.header.stamp = timestamp_msg
+                  self.color_image_msg.header.frame_id = color_image.header.frame_id
+                  self.color_image_msg.height = color_image.height
+                  self.color_image_msg.width = color_image.width
+                  self.color_image_msg.encoding = color_image.encoding
+                  self.color_image_msg.is_bigendian = color_image.is_bigendian
+                  self.color_image_msg.step = color_image.step
+                  self.color_image_msg.data = [int(value) for value in color_image.data]
+              elif connection.topic == DEPTH_FRAME_TOPIC_NAME_TEST and self.depth_image_msg is None:
+                  depth_image = deserialize_cdr(rawdata, connection.msgtype)
+                  self.depth_image_msg = Image()
+                  self.depth_image_msg.header = Header()
+                  self.depth_image_msg.header.stamp = timestamp_msg
+                  self.depth_image_msg.header.frame_id = depth_image.header.frame_id
+                  self.depth_image_msg.height = depth_image.height
+                  self.depth_image_msg.width = depth_image.width
+                  self.depth_image_msg.encoding = depth_image.encoding
+                  self.depth_image_msg.is_bigendian = depth_image.is_bigendian
+                  self.depth_image_msg.step = depth_image.step
+                  self.depth_image_msg.data = [int(value) for value in depth_image.data]
+
+    def publish_messages(self, wait: bool = False):
+        self._publish(wait)
+
+    def publish_messages_after_a_while(self):
+        pub_thread = threading.Thread(target=self.publish_messages, args=(True,))
+        pub_thread.start()
+
+    def _publish(self, wait: bool = False):
+        if wait:
+          time.sleep(0.3)
+        timestamp = self.get_clock().now().to_msg()
+        self.camera_info_msg.header.stamp = timestamp
+        self.color_image_msg.header.stamp = timestamp
+        self.depth_image_msg.header.stamp = timestamp
+        # Publish msgs
+        self.camera_info_pub.publish(self.camera_info_msg)
+        self.color_image_pub.publish(self.color_image_msg)
+        self.depth_image_pub.publish(self.depth_image_msg)
+
+
+def test_camera_as_class_color_frame():
+    fake_camera = FakeCamera()
+    camera = Camera(
+        color_image_topic=COLOR_FRAME_TOPIC_NAME_TEST,
+        depth_image_topic=DEPTH_FRAME_TOPIC_NAME_TEST,
+        camera_info_topic=CAMERA_INFO_TOPIC_NAME_TEST
+    )
+    
+    fake_camera.publish_messages_after_a_while()
+    color_frame = camera.acquire_color_frame_once()
+     
+    # Assert that the color frame is not None
+    assert color_frame is not None, "The color frame should not be None"
+
+    # Assert that the color frame is of type Image
+    assert isinstance(color_frame, np.ndarray), "The color frame should be of type Image"
+
+def test_camera_as_class_color_and_depth_frames():
+    fake_camera = FakeCamera()
+    camera = Camera(
+        color_image_topic=COLOR_FRAME_TOPIC_NAME_TEST,
+        depth_image_topic=DEPTH_FRAME_TOPIC_NAME_TEST,
+        camera_info_topic=CAMERA_INFO_TOPIC_NAME_TEST
+    )
+    
+    fake_camera.publish_messages_after_a_while()
+    color_frame, distance_frame = camera.acquire_frames_once()
+     
+    # Assert that the color frame is not None
+    assert color_frame is not None, "The color frame should not be None"
+    assert distance_frame is not None, "The distance_frame should not be None"
+
+    # Assert that the color frame is of type Image
+    assert isinstance(color_frame, np.ndarray), "The color frame should be of type Image"
+    assert isinstance(distance_frame, np.ndarray), "The distance_frame should be of type Image"
+
+
+if __name__ == '__main__':
+    rclpy.init()
+    # pytest.main()
+    test_camera_as_class_color_frame()
+    test_camera_as_class_color_and_depth_frames()
+    # rclpy.shutdown()
