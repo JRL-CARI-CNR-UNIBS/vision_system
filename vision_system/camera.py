@@ -23,6 +23,7 @@ import rclpy.wait_for_message
 
 from sensor_msgs.msg import CameraInfo, Image
 from vision_system.post_processing import PostProcessing
+import numpy as np
 
 DEFAULT_COLOR_IMAGE_TOPIC = '/camera/color/image_raw'
 DEFAULT_DEPTH_IMAGE_TOPIC = '/camera/depth/image_raw'
@@ -40,7 +41,8 @@ class Camera(Node):
                  depth_image_topic = DEFAULT_DEPTH_IMAGE_TOPIC, 
                  camera_info_topic = DEFAULT_CAMERA_INFO_TOPIC, 
                  frames_approx_sync = DEFAULT_FRAMES_APPROX_SYNC,
-                 depth_frame_encoding = DEFAULT_DEPTH_FRAME_ENCODING):
+                 depth_frame_encoding = DEFAULT_DEPTH_FRAME_ENCODING,
+                 ):
 
         super().__init__('camera_node')
 
@@ -94,7 +96,7 @@ class Camera(Node):
     def retrieve_camera_info(self):
       self.get_logger().info('Waiting for camera info...')
       retrieved, self.camera_info = rclpy.wait_for_message.wait_for_message(
-            CameraInfo, self, self.camera_info_topic, time_to_wait=30.0
+            CameraInfo, self, self.camera_info_topic, time_to_wait=3.0
         )
       if not retrieved:
         self.get_logger().error('Failed to retrieve camera info.')
@@ -119,21 +121,31 @@ class Camera(Node):
       return self.color_frame.copy()
 
     def acquire_frames_once(self):
-      retrieved_color, color_frame = rclpy.wait_for_message.wait_for_message(
-            Image, self, self.color_image_topic, time_to_wait=3
-        )
-      retrieved_depth, depth_frame = rclpy.wait_for_message.wait_for_message(
-            Image, self, self.depth_image_topic, time_to_wait=3
-        )
+      self._reset_frames()
+      image_sub = message_filters.Subscriber(
+        self, Image, self.color_image_topic)
+      depth_sub = message_filters.Subscriber(
+        self, Image, self.depth_image_topic)
       
-      if not retrieved_color or not retrieved_depth:
-        self.get_logger().error('Failed to retrieve frames.')
-        return None, None
+      def acquire_frames_once_callback(color_frame, depth_frame):
+        self._convert_frames(color_frame, depth_frame)
+        self.destroy_subscription(image_sub)
+        self.destroy_subscription(depth_sub)
+      
+      synchronizer = message_filters.TimeSynchronizer(
+          (image_sub, depth_sub), 10)
+      synchronizer.registerCallback(acquire_frames_once_callback)
 
-      if not self._convert_frames(color_frame, depth_frame):
+      t_start = self.get_clock().now().nanoseconds*1e-9
+      elapsed_time = 0.0
+      while rclpy.ok() and self.color_frame is None and elapsed_time < 3:
+          rclpy.spin_once(self, timeout_sec=0.1)
+          elapsed_time = self.get_clock().now().nanoseconds*1e-9 - t_start
+      
+      if self.color_frame is not None and self.distance_frame is not None:
+        return self.color_frame.copy(), self.distance_frame.copy()
+      else:
         return None, None
-
-      return self.color_frame.copy(), self.distance_frame.copy()
     
     def process_once(self):
       color_frame, distance_frame = self.acquire_frames_once()
@@ -154,19 +166,16 @@ class Camera(Node):
           self.get_logger().error(f'Error importing proccessing function: {e}')
           raise e
 
-    def acquire(self):
+    def start_acquire(self):
       if self.camera_info is None:
         self.retrieve_camera_info()
       self._synchronizer.registerCallback(self._process)
     
     def _process(self, color_frame: Image, depth_frame: Image):
       if not self._convert_frames(color_frame, depth_frame):
-        return None
-
+        return
       if self.post_processing is not None:
-        self.post_processing.process_frames(self.color_frame, self.distance_frame)
-
-      return self.color_frame.copy(), self.distance_frame.copy()
+        self.post_processing.process_frames(self.color_frame.copy(), self.distance_frame.copy())
 
     def _process_color_frame(self, color_frame: Image):
       try:
@@ -180,7 +189,7 @@ class Camera(Node):
 
       return self.color_frame.copy(), self.distance_frame.copy()
 
-    def acquire_only_color(self):
+    def start_acquire_only_color(self):
       self.color_sub= self.create_subscription(
             Image,
             self.color_image_topic,
@@ -189,14 +198,30 @@ class Camera(Node):
         )
 
     def get_frames(self):
-      return self.color_frame.copy(), self.distance_frame.copy()
+      if self.color_frame is not None and self.distance_frame is not None:
+        return self.color_frame.copy(), self.distance_frame.copy()
   
-    def get_color_frame(self):
-      return self.color_frame.copy()
+    def get_color_frame(self) -> np.ndarray:
+      if self.color_frame is not None:
+        return self.color_frame.copy()
+      return None
     
-    def get_distance_frame(self):
-      return self.distance_frame.copy()
-
+    def get_distance_frame(self) -> np.ndarray:
+      if self.distance_frame is not None:
+        return self.distance_frame.copy()
+      return None
+    
+    def get_camera_info(self) -> CameraInfo:
+      if self.camera_info is not None:
+        return self.camera_info.copy()
+      return None
+    
     def get_frame_id(self):
-      #TODO(@kalman): Implement
-      pass
+      if self.camera_info is not None:
+        return self.camera_info.header.frame_id
+      return None
+
+    def _reset_frames(self):
+      self.color_frame = None
+      self.depth_frame = None
+      self.distance_frame = None

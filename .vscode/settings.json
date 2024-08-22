@@ -1,0 +1,14 @@
+{
+  "python.autoComplete.extraPaths": [
+    "/home/kalman/projects/test_ws/build/vision_system",
+    "/home/kalman/projects/test_ws/install/vision_system/lib/python3.10/site-packages",
+    "/opt/ros/humble/lib/python3.10/site-packages",
+    "/opt/ros/humble/local/lib/python3.10/dist-packages"
+  ],
+  "python.analysis.extraPaths": [
+    "/home/kalman/projects/test_ws/build/vision_system",
+    "/home/kalman/projects/test_ws/install/vision_system/lib/python3.10/site-packages",
+    "/opt/ros/humble/lib/python3.10/site-packages",
+    "/opt/ros/humble/local/lib/python3.10/dist-packages"
+  ]
+}
