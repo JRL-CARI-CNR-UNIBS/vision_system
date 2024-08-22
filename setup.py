@@ -17,7 +17,11 @@ setup(
         (os.path.join('share', package_name, 'config'), glob('scripts/*.py')),
         (os.path.join('share', package_name, 'test'), glob('test/test_bag/*'))
     ],
-    install_requires=['setuptools'],
+    install_requires=['setuptools',
+                      'rosbags',
+                      'pytest-dependency',
+                      'numpy',
+                      'opencv-python'],
     zip_safe=True,
     maintainer='kalman',
     maintainer_email='samuele.sandrini@polito.it',

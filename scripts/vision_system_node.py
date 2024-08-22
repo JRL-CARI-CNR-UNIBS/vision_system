@@ -18,17 +18,9 @@ from vision_system.camera import Camera
 
 def main():
   rclpy.init()
-  vision_system_node = Camera(camera_info_topic='/camera/depth/camera_info',
-                              color_image_topic='/camera/color/image_raw',
-                              depth_image_topic='/camera/depth/image_raw',
-                              frames_approx_sync=True,
-                              depth_frame_encoding='32FC1')
+  vision_system_node = Camera()  
   vision_system_node.retrieve_camera_info()
   
-  color, distance = vision_system_node.process_once()
-  
-
-  # vision_system_node.acquire()
   rclpy.spin(vision_system_node)
   
   vision_system_node.destroy_node()

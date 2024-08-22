@@ -16,13 +16,10 @@
 import pytest
 import rclpy
 from rclpy.node import Node
-import rclpy.qos as qos
 from rosbags.rosbag2 import Reader
-from rosbags.serde import deserialize_cdr
 from sensor_msgs.msg import CameraInfo, Image
 from std_msgs.msg import Header
 from vision_system.camera import Camera
-from setuptools import find_packages
 import os
 import threading, time
 import numpy as np
