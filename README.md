@@ -15,7 +15,7 @@ This library is designed to facilitate the integration and management of cameras
 To install the library, clone the repository and build it using colcon (inside src folder of your workspace):
 
 ```bash
-git clone https://github.com/your-repo/vision_system.git
+git clone https://github.com/SamueleSandrini/vision_system
 cd vision_system
 pip install -r requirements.txt
 cd ..

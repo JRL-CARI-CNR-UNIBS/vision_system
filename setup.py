@@ -23,7 +23,7 @@ setup(
                       'numpy',
                       'opencv-python'],
     zip_safe=True,
-    maintainer='kalman',
+    maintainer='Samuele Sandrini',
     maintainer_email='samuele.sandrini@polito.it',
     description='Vision System package for camera acquisition and post processing of rgb and depth images', 
     license='Apache Version 2.0',

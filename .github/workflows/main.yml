@@ -23,10 +23,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-     - name: install python dep
-       run: |
-         python3 -m pip install -r requirements.txt
-          
+      - name: install python dep
+        run: |
+          python3 -m pip install -r requirements.txt
+            
       - name: build and test
         uses: ros-tooling/action-ros-ci@0.3.3
         with:
