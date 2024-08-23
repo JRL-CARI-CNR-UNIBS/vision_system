@@ -1,4 +1,5 @@
 from vision_system.camera import Camera
+import vision_system.vision_system_utils as vision_utils
 import rclpy
 import cv2 as cv
 
@@ -18,10 +19,16 @@ def main():
     
     rgb_frame, distance_frame  = camera.acquire_frames_once()
     # Do whatever you want with the frames example show them  
+    camera_info = camera.get_camera_info()
+
+    print(vision_utils.deproject_pixel_to_point([100, 150], distance_frame[100,150], camera_info))
+
     cv.imshow('Color Frame', rgb_frame)
     cv.imshow('Distance Frame', distance_frame)
     cv.waitKey(0)
     cv.destroyAllWindows()
+
+
 
     # Otherwise if you want to use the processing functio and so do nothing here call:
     # camera.process_once() instead of camera.acquire_frames_once

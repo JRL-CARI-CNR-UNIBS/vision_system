@@ -18,22 +18,22 @@ import cv2
 from sensor_msgs.msg import CameraInfo
 import numpy as np
 
-def deproject_pixel_to_point(self, pixel, distance, camera_info: CameraInfo):
+def deproject_pixel_to_point(pixel, distance, camera_info: CameraInfo):
   """
   Deproject a pixel to a 3D point
   :param pixel: (u, v) pixel coordinates
   :param depth: depth value
   :return: (x, y, z) 3D point
   """
-  if self.camera_info is None:
+  if camera_info is None:
       return None
   
   # Camera intrinsics
-  fx = self.camera_info.K[0]
-  fy = self.camera_info.K[4]
-  ppx = self.camera_info.K[2]
-  ppy = self.camera_info.K[5]
-  coeffs = [coeff for coeff in self.camera_info.D]
+  fx = camera_info.k[0]
+  fy = camera_info.k[4]
+  ppx = camera_info.k[2]
+  ppy = camera_info.k[5]
+  coeffs = [coeff for coeff in camera_info.d]
 
   u = pixel[0]
   v = pixel[1]

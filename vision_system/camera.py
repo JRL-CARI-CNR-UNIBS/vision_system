@@ -24,6 +24,7 @@ import rclpy.wait_for_message
 from sensor_msgs.msg import CameraInfo, Image
 from vision_system.post_processing import PostProcessing
 import numpy as np
+import copy
 from typing import Optional, Tuple
 
 DEFAULT_COLOR_IMAGE_TOPIC = '/camera/color/image_raw'
@@ -300,7 +301,7 @@ class Camera(Node):
       :return: The camera info as a CameraInfo object, or None if it has not been retrieved.
       """
       if self.camera_info is not None:
-        return self.camera_info.copy()
+        return copy.deepcopy(self.camera_info) 
       return None
     
     def get_frame_id(self) -> Optional[str]:
