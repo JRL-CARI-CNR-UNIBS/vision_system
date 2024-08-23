@@ -197,8 +197,8 @@ def test_camera_as_class_with_post_processing(capsys, fake_camera):
     
     try:
       camera.set_processing_function(package_name='test',
-                                module_name='post_processing_example',
-                                class_name='YOLOMock')
+                                    module_name='post_processing_example',
+                                    class_name='YOLOMock')
     except (Exception, TypeError):
         pytest.fail("The set_processing_function should not raise an exception")
     fake_camera.publish_messages_after_a_while()

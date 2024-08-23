@@ -26,7 +26,7 @@ def generate_launch_description():
 
     vision_config_path_cmd = DeclareLaunchArgument(
         'vision_config_path',
-        default_value=pkg_dir + '/config/vision_system_config.csv',
+        default_value=pkg_dir + '/config/vision_system_config.yaml',
         description='Full path to the config file')
 
     vision_system_node_cmd = Node(

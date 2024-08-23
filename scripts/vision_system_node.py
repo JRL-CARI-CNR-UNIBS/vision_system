@@ -19,8 +19,11 @@ from vision_system.camera import Camera
 def main():
   rclpy.init()
   vision_system_node = Camera()  
-  vision_system_node.retrieve_camera_info()
-  
+  if not vision_system_node.retrieve_camera_info():
+    vision_system_node.destroy_node()
+    rclpy.shutdown()
+    return
+  vision_system_node.start_acquire()
   rclpy.spin(vision_system_node)
   
   vision_system_node.destroy_node()

@@ -1,0 +1,7 @@
+vision\_system.camera module
+============================
+
+.. automodule:: vision_system.camera
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -16,6 +16,7 @@
 from vision_system.post_processing import PostProcessing
 # All the import that you need
 import cv2 as cv
+import rclpy
 
 class YOLOMock(PostProcessing):
   def process_frames(self, color_frame, distance_frame):
@@ -29,7 +30,8 @@ class PostProcessingExample(PostProcessing):
   def process_frames(self, color_frame, distance_frame):
     # Show the color frame
     cv.imshow('Color Frame', color_frame)
-    cv.waitKey(0)
+    if rclpy.ok():
+      cv.waitKey(0)
     cv.destroyAllWindows()
   
   def process_frame(self, color_frame):

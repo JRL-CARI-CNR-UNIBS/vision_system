@@ -1,0 +1,20 @@
+vision\_system package
+======================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   vision_system.camera
+   vision_system.post_processing
+   vision_system.vision_system_utils
+
+Module contents
+---------------
+
+.. automodule:: vision_system
+   :members:
+   :undoc-members:
+   :show-inheritance:

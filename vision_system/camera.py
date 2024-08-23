@@ -34,7 +34,23 @@ DEFAULT_DEPTH_FRAME_ENCODING = '32FC1'
 
 class Camera(Node):
     """
-    Camera class for acquiring images (color and depth) from a RGBD-camera.
+    Camera class for acquiring images (color and depth) from an RGBD-camera.
+
+    This class is responsible for subscribing to the image and depth topics making it easy to access to camera frames,
+    converting the images using `cv_bridge`, and optionally applying post-processing.
+
+    Parameters
+    ----------
+    color_image_topic : str, optional
+        The topic for color images (default is '/camera/color/image_raw').
+    depth_image_topic : str, optional
+        The topic for depth images (default is '/camera/depth/image_raw').
+    camera_info_topic : str, optional
+        The topic for camera information (default is '/camera/depth/camera_info').
+    frames_approx_sync : bool, optional
+        Whether to use approximate time synchronization (default is False).
+    depth_frame_encoding : str, optional
+        The encoding of the depth frame (default is '32FC1').
     """
 
     def __init__(self, 
@@ -53,6 +69,9 @@ class Camera(Node):
         self.declare_parameter('camera_info_topic', camera_info_topic)
         self.declare_parameter('frames_approx_sync', frames_approx_sync)
         self.declare_parameter('depth_frame_encoding', depth_frame_encoding)
+        self.declare_parameter('post_processing.package', '')
+        self.declare_parameter('post_processing.module', '')
+        self.declare_parameter('post_processing.class', '')
 
         # Get parameter values
         self.color_image_topic = self.get_parameter('color_image_topic').get_parameter_value().string_value
@@ -72,18 +91,30 @@ class Camera(Node):
         self.post_processing: Optional[PostProcessing] = None
 
         self.image_sub = message_filters.Subscriber(
-            self, Image, color_image_topic)
+            self, Image, self.color_image_topic)
         self.depth_sub = message_filters.Subscriber(
-            self, Image, depth_image_topic)
-        
-        if frames_approx_sync:
+            self, Image, self.depth_image_topic)
+
+        if self.frames_approx_sync:
           self._synchronizer = message_filters.ApproximateTimeSynchronizer(
             (self.image_sub, self.depth_sub), 10, 0.5)
         else:
           self._synchronizer = message_filters.TimeSynchronizer(
             (self.image_sub, self.depth_sub), 10)
         
-    
+        post_processing_package = self.get_parameter('post_processing.package').get_parameter_value().string_value
+        post_processing_module = self.get_parameter('post_processing.module').get_parameter_value().string_value
+        post_processing_class = self.get_parameter('post_processing.class').get_parameter_value().string_value
+
+        if post_processing_package and post_processing_module and post_processing_class:
+          self.get_logger().info(post_processing_package)
+          try:
+            self.set_processing_function(post_processing_package, 
+                                         post_processing_module, 
+                                         post_processing_class)        
+          except (Exception, TypeError) as e:
+            self.get_logger().warning(f'Error setting processing function: {e}. It will not be called')
+
     def _convert_frames(self, color_frame: Image, depth_frame: Image) -> bool:
       try:
         self.color_frame = self._cv_bridge.imgmsg_to_cv2(color_frame, desired_encoding='passthrough')
@@ -199,6 +230,7 @@ class Camera(Node):
       """
       Starts the acquisition of synchronized color and depth frames, with post-processing.
       """
+      self.get_logger().info('Acquisition started...')
       if self.camera_info is None:
         self.retrieve_camera_info()
       self._synchronizer.registerCallback(self._process)

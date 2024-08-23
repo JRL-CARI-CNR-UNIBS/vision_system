@@ -1,12 +1,13 @@
 vision_system_node:
   ros__parameters:
-    color_image_topic: "/camera/image_raw"
-    depth_image_topic: "camera/depth"
-    camera_info_topic: "/camera/camera_info"
+    color_image_topic: "/head_front_camera/rgb/image_raw"
+    depth_image_topic: "/head_front_camera/depth_registered/image_raw"
+    camera_info_topic: "/head_front_camera/depth_registered/camera_info"
+    frames_approx_sync: false
 
     post_processing:
-      package: "vision_system"
-      module: "post_processing"
-      class: "PostProcessing"
+      package: "examples"
+      module: "post_processing_example"
+      class: "PostProcessingExample"
 
   

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vision_system.camera module &mdash; vision_system 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=7026087e"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="vision_system.post_processing module" href="vision_system.post_processing.html" />
+    <link rel="prev" title="vision_system package" href="vision_system.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            vision_system
+          </a>
+              <div class="version">
+                0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Python API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="vision_system.html">vision_system package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="vision_system.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">vision_system.camera module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vision_system.post_processing.html">vision_system.post_processing module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vision_system.vision_system_utils.html">vision_system.vision_system_utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="vision_system.html#module-vision_system">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="standards.html">Standard Documents</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="standard_docs/CONTRIBUTING.html">CONTRIBUTING</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="standard_docs/CONTRIBUTING.html#contributing-to-vision-system">Contributing to vision_system</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="standard_docs/LICENSE.html">LICENSE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="standard_docs/PACKAGE.html">PACKAGE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="standard_docs/README.html">README</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="standard_docs/README.html#vision-system-library">📷 Vision System Library</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="standard_docs/README.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="standard_docs/README.html#features">Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="standard_docs/README.html#usage">Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="standard_docs/README.html#contribution">Contribution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="standard_docs/README.html#license">License</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">vision_system</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">vision_system</a></li>
+          <li class="breadcrumb-item"><a href="vision_system.html">vision_system package</a></li>
+      <li class="breadcrumb-item active">vision_system.camera module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/vision_system.camera.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-vision_system.camera">
+<span id="vision-system-camera-module"></span><h1>vision_system.camera module<a class="headerlink" href="#module-vision_system.camera" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="vision_system.camera.Camera">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vision_system.camera.</span></span><span class="sig-name descname"><span class="pre">Camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color_image_topic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/camera/color/image_raw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_image_topic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/camera/depth/image_raw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_info_topic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/camera/depth/camera_info'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames_approx_sync</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_frame_encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'32FC1'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vision_system.camera.Camera" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<p>Camera class for acquiring images (color and depth) from an RGBD-camera.</p>
+<p>This class is responsible for subscribing to the image and depth topics making it easy to access to camera frames,
+converting the images using <cite>cv_bridge</cite>, and optionally applying post-processing.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>color_image_topic<span class="classifier">str, optional</span></dt><dd><p>The topic for color images (default is ‘/camera/color/image_raw’).</p>
+</dd>
+<dt>depth_image_topic<span class="classifier">str, optional</span></dt><dd><p>The topic for depth images (default is ‘/camera/depth/image_raw’).</p>
+</dd>
+<dt>camera_info_topic<span class="classifier">str, optional</span></dt><dd><p>The topic for camera information (default is ‘/camera/depth/camera_info’).</p>
+</dd>
+<dt>frames_approx_sync<span class="classifier">bool, optional</span></dt><dd><p>Whether to use approximate time synchronization (default is False).</p>
+</dd>
+<dt>depth_frame_encoding<span class="classifier">str, optional</span></dt><dd><p>The encoding of the depth frame (default is ‘32FC1’).</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="vision_system.camera.Camera.acquire_color_frame_once">
+<span class="sig-name descname"><span class="pre">acquire_color_frame_once</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#vision_system.camera.Camera.acquire_color_frame_once" title="Link to this definition"></a></dt>
+<dd><p>Acquires a single color frame waiting for the topic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The acquired color frame as a cv2 image as NumPy array, or None if acquisition fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vision_system.camera.Camera.acquire_frames_once">
+<span class="sig-name descname"><span class="pre">acquire_frames_once</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#vision_system.camera.Camera.acquire_frames_once" title="Link to this definition"></a></dt>
+<dd><p>Acquires a single pair of color and depth frames.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of (color_frame, depth_frame) as NumPy arrays, or (None, None) if acquisition fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vision_system.camera.Camera.get_camera_info">
+<span class="sig-name descname"><span class="pre">get_camera_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">CameraInfo</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#vision_system.camera.Camera.get_camera_info" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the camera info.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The camera info as a CameraInfo object, or None if it has not been retrieved.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vision_system.camera.Camera.get_color_frame">
+<span class="sig-name descname"><span class="pre">get_color_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#vision_system.camera.Camera.get_color_frame" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the most recently acquired color frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The color frame as a NumPy array, or None if no frame is available.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vision_system.camera.Camera.get_distance_frame">
+<span class="sig-name descname"><span class="pre">get_distance_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#vision_system.camera.Camera.get_distance_frame" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the most recently acquired depth frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The depth frame as a NumPy array, or None if no frame is available.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vision_system.camera.Camera.get_frame_id">
+<span class="sig-name descname"><span class="pre">get_frame_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#vision_system.camera.Camera.get_frame_id" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the frame ID from the camera info.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The frame ID as a string, or None if camera info is not available.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vision_system.camera.Camera.get_frames">
+<span class="sig-name descname"><span class="pre">get_frames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#vision_system.camera.Camera.get_frames" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the most recently acquired color and depth frames.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of (color_frame, depth_frame) as NumPy arrays, or None if frames are not available.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vision_system.camera.Camera.process_once">
+<span class="sig-name descname"><span class="pre">process_once</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#vision_system.camera.Camera.process_once" title="Link to this definition"></a></dt>
+<dd><p>Processes a single pair of color and depth frames using the provided post-processing function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Processed frames or None if acquisition or processing fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vision_system.camera.Camera.retrieve_camera_info">
+<span class="sig-name descname"><span class="pre">retrieve_camera_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#vision_system.camera.Camera.retrieve_camera_info" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the camera info waiting for the topic and stores it in the class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if camera info is successfully retrieved, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vision_system.camera.Camera.set_processing_function">
+<span class="sig-name descname"><span class="pre">set_processing_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vision_system.camera.Camera.set_processing_function" title="Link to this definition"></a></dt>
+<dd><p>Dynamically loads and sets the post-processing function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>package_name</strong> – The name of the package containing the post-processing module.</p></li>
+<li><p><strong>module_name</strong> – The name of the module containing the post-processing class.</p></li>
+<li><p><strong>class_name</strong> – The name of the post-processing class.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p>Exception if loading fails or if the class is not an instance of PostProcessing.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vision_system.camera.Camera.start_acquire">
+<span class="sig-name descname"><span class="pre">start_acquire</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vision_system.camera.Camera.start_acquire" title="Link to this definition"></a></dt>
+<dd><p>Starts the acquisition of synchronized color and depth frames, with post-processing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vision_system.camera.Camera.start_acquire_only_color">
+<span class="sig-name descname"><span class="pre">start_acquire_only_color</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vision_system.camera.Camera.start_acquire_only_color" title="Link to this definition"></a></dt>
+<dd><p>Starts the acquisition of color frames only, with post-processing (is necessary to spin the node).</p>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="vision_system.html" class="btn btn-neutral float-left" title="vision_system package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="vision_system.post_processing.html" class="btn btn-neutral float-right" title="vision_system.post_processing module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright The &lt;vision_system&gt; Contributors. License: Apache 2.0.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
