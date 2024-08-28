@@ -25,7 +25,7 @@ colcon build --symlink-install
 ## Usage
 
 ### Camera Node Class
-The Camera class serves as a ROS2 node and can be used both directly as a regular class with its [API](https://samuelesandrini.github.io/vision_system/) methods or run as a ROS2 node. Below is a summary of the main API methods available in the class:
+The Camera class serves as a ROS2 node and can be used both directly as a regular class with its [API](https://jrl-cari-cnr-unibs.github.io/vision_system/) methods or run as a ROS2 node. Below is a summary of the main API methods available in the class:
 
 It follows a table summarizing the main class API method.
 
@@ -46,7 +46,7 @@ It follows a table summarizing the main class API method.
 
 ### PostProcessing Class
 
-Additionally, you can configure a custom post-processing function for the acquisition process. This is useful to avoid rewriting the same code repeatedly by simply adding the custom function to the pipeline. Examples of post-processing functions include object detection with YOLO, broadcasting transforms, displaying images with `cv2.imshow`, etc. To do this, you need to create a `CustomPostProcessing` class that inherits from [PostProcessing](https://github.com/SamueleSandrini/vision_system/blob/main/vision_system/post_processing.py), which is an abstract class with two methods that must be implemented:
+Additionally, you can configure a custom post-processing function for the acquisition process. This is useful to avoid rewriting the same code repeatedly by simply adding the custom function to the pipeline. Examples of post-processing functions include object detection with YOLO, broadcasting transforms, displaying images with `cv2.imshow`, etc. To do this, you need to create a `CustomPostProcessing` class that inherits from [PostProcessing](https://github.com/JRL-CARI-CNR-UNIBS/vision_system/blob/main/vision_system/post_processing.py), which is an abstract class with two methods that must be implemented:
 
 - `process_frames(self, color_frame, distance_frame)`: This method is automatically called inside `process_once` or `start_acquire`.
 - `process_frame(self, color_frame)`: This method is used only when `start_acquire_only_color` is employed.
@@ -55,12 +55,12 @@ If any of these methods are not required, you can implement them as empty method
 
 ### Utilities
 
-The module [`vision_system_utils.py`](https://github.com/SamueleSandrini/vision_system/blob/main/vision_system/vision_system_utils.py) provides several utilities, such as methods to convert pixel coordinates and depth into corresponding 3D points.
+The module [`vision_system_utils.py`](https://github.com/JRL-CARI-CNR-UNIBS/vision_system/blob/main/vision_system/vision_system_utils.py) provides several utilities, such as methods to convert pixel coordinates and depth into corresponding 3D points.
 
 
 ### Examples
 
-You can find an example of usage of Camera Node and of PostPorcessing definition here: [`Examples`](https://github.com/SamueleSandrini/vision_system/blob/main/examples/).
+You can find an example of usage of Camera Node and of PostPorcessing definition here: [`Examples`](https://github.com/JRL-CARI-CNR-UNIBS/vision_system/tree/main/examples).
 
 
 ### If you want to use the already defined node, use the config file to set the topic name and others config, and use the launch file:
@@ -71,8 +71,8 @@ ros2 launch vision_system vision_system.launch.py
 
 ## Contribution
 
-Each contribution, expecially about utilities are really welcome ;).
+Each contribution, especially about utilities, is really welcome ;).
 
 ## License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](https://github.com/SamueleSandrini/vision_system/blob/main/LICENSE) file for details.
+This project is licensed under the Apache License 2.0 - see the [LICENSE](https://github.com/JRL-CARI-CNR-UNIBS/vision_system/blob/main/LICENSE) file for details.
