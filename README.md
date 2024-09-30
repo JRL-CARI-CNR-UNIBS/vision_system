@@ -73,6 +73,8 @@ ros2 launch vision_system vision_system.launch.py
 
 Each contribution, especially about utilities, is really welcome ;).
 
+Feel free to open an issue if something is not working or if there can be some feature that can be useful.
+
 ## License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](https://github.com/JRL-CARI-CNR-UNIBS/vision_system/blob/main/LICENSE) file for details.
