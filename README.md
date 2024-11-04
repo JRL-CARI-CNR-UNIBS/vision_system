@@ -1,4 +1,8 @@
 # 📷 Vision System Library
+[![GitHub Action
+Status](https://github.com/JRL-CARI-CNR-UNIBS/vision_system/workflows/humble/badge.svg)](https://github.com/JRL-CARI-CNR-UNIBS/vision_system)
+[![GitHub Action
+Status](https://github.com/JRL-CARI-CNR-UNIBS/vision_system/workflows/rolling/badge.svg)](https://github.com/JRL-CARI-CNR-UNIBS/vision_system)
 
 ## Overview
 
