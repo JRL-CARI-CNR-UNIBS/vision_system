@@ -28,13 +28,13 @@ jobs:
           python3 -m pip install -r requirements.txt
           
       - name: build and test
-        uses: ros-tooling/action-ros-ci@0.3.6
+        uses: ros-tooling/action-ros-ci@0.3.3
         with:
           package-name: vision_system
           target-ros2-distro: humble
           colcon-defaults: |
             {
               "test": {
-                "parallel-workers" : 1,
+                "parallel-workers" : 1
               }
             }
