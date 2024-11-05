@@ -3,6 +3,7 @@
 Status](https://github.com/JRL-CARI-CNR-UNIBS/vision_system/workflows/humble/badge.svg)](https://github.com/JRL-CARI-CNR-UNIBS/vision_system)
 [![GitHub Action
 Status](https://github.com/JRL-CARI-CNR-UNIBS/vision_system/workflows/rolling/badge.svg)](https://github.com/JRL-CARI-CNR-UNIBS/vision_system)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FJRL-CARI-CNR-UNIBS%2Fvision_system.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FJRL-CARI-CNR-UNIBS%2Fvision_system?ref=badge_shield)
 
 ## Overview
 
@@ -82,3 +83,6 @@ Feel free to open an issue if something is not working or if there can be some f
 ## License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](https://github.com/JRL-CARI-CNR-UNIBS/vision_system/blob/main/LICENSE) file for details.
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FJRL-CARI-CNR-UNIBS%2Fvision_system.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FJRL-CARI-CNR-UNIBS%2Fvision_system?ref=badge_large)
