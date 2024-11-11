@@ -6,11 +6,13 @@ Status](https://github.com/JRL-CARI-CNR-UNIBS/vision_system/workflows/rolling/ba
 
 ## Overview
 
-This library is designed to facilitate the integration and management of cameras (acquisition side) within a ROS2 system. It provides a `Camera` class that simplifies the acquisition of frames from RGB and depth cameras and also supports custom processing functions via post-processing, and providing utilities.
+This library is designed to facilitate the integration and management of cameras (acquisition side) within a ROS2 application. It offers a `Camera` class that simplifies capturing frames from both RGB and depth cameras and supports custom processing through post-processing functions. By using this library, vision application developers can avoid managing topic subscriptions and camera communication directly. Instead, they can utilize a straightforward API to access the necessary data—such as color frames, depth frames, or camera info—and simply provide post-processing code, which the library calls in real time as needed.
+
+
 
 ## Features
 
-- 🎥 **Frame Acquisition:** Support for acquiring color and depth frames from ROS2-compatible cameras. There are two methods for acquiring frames: using APIs (as one shot class methods) or starting the acquisition/processing phse (loop), the class is also a ROS2 launchable node.
+- 🎥 **Frame Acquisition:** Support for acquiring color and depth frames from ROS2-compatible cameras. There are two methods for acquiring frames: using APIs (as one-shot class methods) or starting the acquisition/processing phase (loop); the class is also a ROS2 launchable node.
 - 🛠️ **Post-Processing:** The ability to apply a post-processing function to the acquired frames.
 - 🔧 **ROS2 Integration:** Uses ROS2 topics and parameters to manage data.
 
