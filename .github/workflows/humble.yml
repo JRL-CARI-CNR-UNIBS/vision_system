@@ -29,22 +29,22 @@ jobs:
           python3 -m pip install -r requirements.txt
           
       - name: build and test
-        uses: ros-tooling/action-ros-ci@v0.4
+        uses: ros-tooling/action-ros-ci@0.3.3
         with:
           package-name: vision_system
           target-ros2-distro: humble
           colcon-defaults: |
             {
-              "build": {
-                "mixin": ["coverage-pytest"]
-              },
+
               "test": {
-                "mixin": ["coverage-pytest"]
+
+                "parallel-workers" : 1
               }
             }
-          colcon-mixin-repository: https://raw.githubusercontent.com/colcon/colcon-mixin-repository/b8436aa16c0bdbc01081b12caa253cbf16e0fb82/index.yaml
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: JRL-CARI-CNR-UNIBS/vision_system
+#          colcon-mixin-repository: https://raw.githubusercontent.com/colcon/colcon-mixin-repository/b8436aa16c0bdbc01081b12caa253cbf16e0fb82/index.yaml
+#      - uses: codecov/codecov-action@v1.2.1
+#        with:
+#          token: ${{ secrets.CODECOV_TOKEN }}  # only needed for private repos
+#          files: ros_ws/lcov/total_coverage.info,ros_ws/coveragepy/.coverage
+#          flags: unittests
+#          name: codecov-umbrella
