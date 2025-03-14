@@ -19,6 +19,9 @@ from abc import ABC, abstractmethod
 class PostProcessing(ABC):
   def __init__(self):
     pass
+
+  def initialize(self, camera_info):
+    pass
   
   @abstractmethod
   def process_frames(self, color_frame, distance_frame):
