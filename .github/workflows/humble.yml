@@ -42,9 +42,12 @@ jobs:
               }
             }
 #          colcon-mixin-repository: https://raw.githubusercontent.com/colcon/colcon-mixin-repository/b8436aa16c0bdbc01081b12caa253cbf16e0fb82/index.yaml
-#      - uses: codecov/codecov-action@v1.2.1
-#        with:
-#          token: ${{ secrets.CODECOV_TOKEN }}  # only needed for private repos
-#          files: ros_ws/lcov/total_coverage.info,ros_ws/coveragepy/.coverage
-#          flags: unittests
-#          name: codecov-umbrella
+      - name: test
+        run: |
+          pytest-3 --cov=vision_system --cov-report=term-missing
+      - uses: codecov/codecov-action@v1.2.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}  # only needed for private repos
+          files: ros_ws/lcov/total_coverage.info,ros_ws/coveragepy/.coverage
+          flags: unittests
+          name: codecov-umbrella
