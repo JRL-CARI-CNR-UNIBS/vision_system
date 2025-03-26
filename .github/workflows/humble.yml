@@ -42,13 +42,13 @@ jobs:
 #          colcon-mixin-repository: https://raw.githubusercontent.com/colcon/colcon-mixin-repository/b8436aa16c0bdbc01081b12caa253cbf16e0fb82/index.yaml
       - name: Run Tests
         run: |
-          source /home/runner/work/vision_system/vision_system/ros_ws/install/setup.bash
+          source /opt/ros/humble/setup.sh
           pytest-3 --cov=vision_system --cov-report=term-missing --cov-report=xml:coverage.xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1.2.1
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}  # solo necessario per repo privati
-          files: coverage.xml  # Assicurati che il file coverage.xml venga generato
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.xml
           flags: unittests
           name: codecov-umbrella
