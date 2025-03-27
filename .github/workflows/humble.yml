@@ -43,6 +43,7 @@ jobs:
       - name: Run Tests
         run: |
           ls -la
+          ls -la ~/ros_ws/install/vision_system/
           source /opt/ros/humble/setup.sh 
           echo "Workspace Path: ${{steps.action_ros_ci_step.outputs.ros-workspace-directory-name }}"
           cd ${{steps.action_ros_ci_step.outputs.ros-workspace-directory-name }}
