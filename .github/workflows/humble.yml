@@ -45,6 +45,8 @@ jobs:
           ls -la
           source /opt/ros/humble/setup.sh 
           echo "Workspace Path: ${{steps.action_ros_ci_step.outputs.ros-workspace-directory-name }}"
+          cd ${{steps.action_ros_ci_step.outputs.ros-workspace-directory-name }}
+          ls -la
           source ${{steps.action_ros_ci_step.outputs.ros-workspace-directory-name }}/install/setup.sh
           pytest-3 --cov=vision_system --cov-report=term-missing --cov-report=xml:coverage.xml
           cd ${{steps.action_ros_ci_step.outputs.ros-workspace-directory-name }}
