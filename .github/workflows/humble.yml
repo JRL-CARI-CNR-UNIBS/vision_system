@@ -29,7 +29,7 @@ jobs:
           python3 -m pip install -r requirements.txt
           
       - name: build and test
-        uses: ros-tooling/action-ros-ci@0.3.3
+        uses: ros-tooling/action-ros-ci@0.4
         with:
           package-name: vision_system
           target-ros2-distro: humble
@@ -42,7 +42,13 @@ jobs:
 #          colcon-mixin-repository: https://raw.githubusercontent.com/colcon/colcon-mixin-repository/b8436aa16c0bdbc01081b12caa253cbf16e0fb82/index.yaml
       - name: Run Tests
         run: |
-          source /opt/ros/humble/setup.sh
+          ls -la
+          source /opt/ros/humble/setup.sh 
+          echo "Workspace Path: ${{steps.action_ros_ci_step.outputs.ros-workspace-directory-name }}"
+          source ${{steps.action_ros_ci_step.outputs.ros-workspace-directory-name }}/install/setup.sh
+          pytest-3 --cov=vision_system --cov-report=term-missing --cov-report=xml:coverage.xml
+          cd ${{steps.action_ros_ci_step.outputs.ros-workspace-directory-name }}
+          ls -la
       #     source install/setup.sh
       #     pytest-3 --cov=vision_system --cov-report=term-missing --cov-report=xml:coverage.xml
 
