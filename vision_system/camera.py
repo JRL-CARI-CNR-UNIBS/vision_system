@@ -32,6 +32,7 @@ DEFAULT_DEPTH_IMAGE_TOPIC = '/camera/depth/image_raw'
 DEFAULT_CAMERA_INFO_TOPIC = '/camera/depth/camera_info'
 DEFAULT_FRAMES_APPROX_SYNC = False
 DEFAULT_DEPTH_FRAME_ENCODING = '32FC1'
+DEFAULT_DEPTH_UNIT_IN_METERS = True
 
 class Camera(Node):
     """
@@ -60,6 +61,7 @@ class Camera(Node):
                  camera_info_topic: str = DEFAULT_CAMERA_INFO_TOPIC, 
                  frames_approx_sync: bool = DEFAULT_FRAMES_APPROX_SYNC,
                  depth_frame_encoding: str = DEFAULT_DEPTH_FRAME_ENCODING,
+                 depth_unit_in_meters: bool = DEFAULT_DEPTH_UNIT_IN_METERS
                  ):
 
         super().__init__('camera_node')
@@ -70,6 +72,7 @@ class Camera(Node):
         self.declare_parameter('camera_info_topic', camera_info_topic)
         self.declare_parameter('frames_approx_sync', frames_approx_sync)
         self.declare_parameter('depth_frame_encoding', depth_frame_encoding)
+        self.declare_parameter('depth_unit_in_meters', DEFAULT_DEPTH_UNIT_IN_METERS)
         self.declare_parameter('post_processing.package', '')
         self.declare_parameter('post_processing.module', '')
         self.declare_parameter('post_processing.class', '')
@@ -80,6 +83,7 @@ class Camera(Node):
         self.camera_info_topic = self.get_parameter('camera_info_topic').get_parameter_value().string_value
         self.frames_approx_sync = self.get_parameter('frames_approx_sync').get_parameter_value().bool_value
         self.depth_frame_encoding = self.get_parameter('depth_frame_encoding').get_parameter_value().string_value
+        self.depth_unit_in_meters = self.get_parameter('depth_unit_in_meters').get_parameter_value().bool_value
 
         self._cv_bridge = CvBridge()
 
@@ -124,6 +128,8 @@ class Camera(Node):
       except CvBridgeError as e:
         self.get_logger().error(f'Error converting image: {e}')
         return False
+      if not self.depth_unit_in_meters:
+          self.distance_frame = self.distance_frame / 1000.0  # mm -> m
       return True
       
     def retrieve_camera_info(self) -> bool:
