@@ -14,37 +14,43 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
       fail-fast: false
-    
+
     steps:
       - name: Setup ROS 2
         uses: ros-tooling/setup-ros@0.7.0
         with:
           required-ros-distributions: humble
-          
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: install python dep
         run: |
           python3 -m pip install -r requirements.txt
-          
+
       - name: build and test
-        uses: ros-tooling/action-ros-ci@0.3.3
+        uses: ros-tooling/action-ros-ci@v0.4
         with:
           package-name: vision_system
           target-ros2-distro: humble
           colcon-defaults: |
             {
-
               "test": {
-
                 "parallel-workers" : 1
               }
             }
-#          colcon-mixin-repository: https://raw.githubusercontent.com/colcon/colcon-mixin-repository/b8436aa16c0bdbc01081b12caa253cbf16e0fb82/index.yaml
-#      - uses: codecov/codecov-action@v1.2.1
-#        with:
-#          token: ${{ secrets.CODECOV_TOKEN }}  # only needed for private repos
-#          files: ros_ws/lcov/total_coverage.info,ros_ws/coveragepy/.coverage
-#          flags: unittests
-#          name: codecov-umbrella
+
+      - name: Run Tests
+        run: |
+          cd ros_ws
+          source /opt/ros/humble/setup.sh 
+          source install/setup.bash 
+          pytest-3 --cov=vision_system --cov-report=term-missing --cov-report=xml:coverage.xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1.2.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ros_ws/coverage.xml  # Aggiunto percorso esplicito
+          flags: unittests
+          name: codecov-umbrella
