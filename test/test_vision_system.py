@@ -20,6 +20,7 @@ from rosbags.rosbag2 import Reader
 from sensor_msgs.msg import CameraInfo, Image
 from std_msgs.msg import Header
 from vision_system.camera import Camera
+from vision_system.vision_system_utils import deproject_pixel_to_point
 import os
 import threading, time
 import numpy as np
@@ -187,7 +188,9 @@ def test_camera_post_processing_loading():
                                 module_name='wrong',
                                 class_name='wrong')
 
-@pytest.mark.dependency(name="camera_post_processing", depends=["setUp", "camera_as_class_color", "camera_as_class_color_and_depth", "camera_post_processing_loading"])
+@pytest.mark.dependency(name="camera_post_processing", depends=["setUp", "camera_as_class_color", 
+                                                                "camera_as_class_color_and_depth", 
+                                                                "camera_post_processing_loading"])
 def test_camera_as_class_with_post_processing(capsys, fake_camera):
     camera = Camera(
         color_image_topic=COLOR_FRAME_TOPIC_NAME_TEST,
@@ -206,19 +209,40 @@ def test_camera_as_class_with_post_processing(capsys, fake_camera):
     captured = capsys.readouterr()
     assert captured.out == 'Put post processing code here.\nExample of post processing: (480, 640, 3), (480, 640)\n'
 
-@pytest.mark.dependency(name="camera_node_parameters", depends=["setUp", "camera_post_processing"])
+
+@pytest.mark.dependency(name="test_deproject_pixel_to_point", depends=["setUp", "camera_as_class_color",
+                                                             "camera_as_class_color_and_depth",
+                                                            #  "camera_as_class_color_and_depth_with_units",
+                                                             "camera_post_processing_loading",
+                                                             "camera_post_processing"])
+def test_deproject_pixel_to_point(fake_camera):
+    camera = Camera(
+        color_image_topic=COLOR_FRAME_TOPIC_NAME_TEST,
+        depth_image_topic=DEPTH_FRAME_TOPIC_NAME_TEST,
+        camera_info_topic=CAMERA_INFO_TOPIC_NAME_TEST)
+    fake_camera.publish_camera_info_after_a_while()
+    camera.retrieve_camera_info()
+    camera_info = camera.get_camera_info()
+    fake_camera.publish_messages_after_a_while()
+    x_m, y_m, z_m = deproject_pixel_to_point((0, 0), 1.0, camera_info)
+    assert x_m is not None
+    assert y_m is not None
+    assert z_m is not None
+
+@pytest.mark.dependency(name="camera_node_parameters", depends=["setUp", "test_deproject_pixel_to_point"])
 def test_camera_node_parameters():
     camera = Camera()
     camera.set_parameters([rclpy.parameter.Parameter('color_image_topic', rclpy.Parameter.Type.STRING, COLOR_FRAME_TOPIC_NAME_TEST),
                            rclpy.parameter.Parameter('depth_image_topic', rclpy.Parameter.Type.STRING, DEPTH_FRAME_TOPIC_NAME_TEST),
-                           rclpy.parameter.Parameter('camera_info_topic', rclpy.Parameter.Type.STRING, CAMERA_INFO_TOPIC_NAME_TEST)])
+                           rclpy.parameter.Parameter('camera_info_topic', rclpy.Parameter.Type.STRING, CAMERA_INFO_TOPIC_NAME_TEST),
+                           rclpy.parameter.Parameter('depth_unit_in_meters', rclpy.Parameter.Type.BOOL, False),])
     assert camera.get_parameter('color_image_topic').get_parameter_value().string_value == COLOR_FRAME_TOPIC_NAME_TEST
     assert camera.get_parameter('depth_image_topic').get_parameter_value().string_value == DEPTH_FRAME_TOPIC_NAME_TEST
     assert camera.get_parameter('camera_info_topic').get_parameter_value().string_value == CAMERA_INFO_TOPIC_NAME_TEST
+    assert camera.get_parameter('depth_unit_in_meters').get_parameter_value().bool_value == False
 
 @pytest.mark.dependency(name="camera_node", depends=["setUp", "camera_node_parameters"])
 def test_camera_node(fake_camera):
-    camera = Camera()
 
     camera = Camera(
         color_image_topic=COLOR_FRAME_TOPIC_NAME_TEST,
@@ -253,7 +277,6 @@ def test_camera_node(fake_camera):
     
 @pytest.mark.dependency(name="camera_node_loop", depends=["setUp", "camera_node"])
 def test_camera_node_in_loop(fake_camera):
-    camera = Camera()
 
     camera = Camera(
         color_image_topic=COLOR_FRAME_TOPIC_NAME_TEST,
@@ -304,8 +327,6 @@ def test_camera_node_in_loop(fake_camera):
 
 @pytest.mark.dependency(name="camera_node_loop_with_processing", depends=["setUp", "camera_node_loop"])
 def test_camera_node_in_loop_with_processing(capsys, fake_camera):
-    camera = Camera()
-
     camera = Camera(
         color_image_topic=COLOR_FRAME_TOPIC_NAME_TEST,
         depth_image_topic=DEPTH_FRAME_TOPIC_NAME_TEST,
@@ -323,12 +344,11 @@ def test_camera_node_in_loop_with_processing(capsys, fake_camera):
     camera.retrieve_camera_info()
     try:
       camera.set_processing_function(package_name='test',
-                                module_name='post_processing_example',
-                                class_name='YOLOMock')
+                                    module_name='post_processing_example',
+                                    class_name='YOLOMock')
     except (Exception, TypeError):
         pytest.fail("The set_processing_function should not raise an exception")
 
-    
     test_node = Node('test_node')
 
     test_executor = rclpy.executors.SingleThreadedExecutor()
