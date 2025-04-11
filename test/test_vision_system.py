@@ -376,3 +376,42 @@ def test_camera_node_in_loop_with_processing(capsys, fake_camera):
     spin_thread.join()
     captured = capsys.readouterr()
     assert captured.out == 'Put post processing code here.\nExample of post processing: (480, 640, 3), (480, 640)\n'
+
+@pytest.mark.dependency(name="camera_only_color", depends=["setUp", "camera_node_loop_with_processing"])
+def test_camera_start_acquire_only_color(fake_camera):
+    camera = Camera(
+        color_image_topic=COLOR_FRAME_TOPIC_NAME_TEST,
+        depth_image_topic=DEPTH_FRAME_TOPIC_NAME_TEST,
+        camera_info_topic=CAMERA_INFO_TOPIC_NAME_TEST
+    )
+
+    executor = rclpy.executors.MultiThreadedExecutor(2)
+    executor.add_node(camera)
+    executor.add_node(fake_camera)
+
+    camera.start_acquire_only_color()
+
+    t_start = camera.get_clock().now().nanoseconds * 1e-9
+    elapsed_time = 0.0
+
+    test_node = Node('test_node')
+    executor.add_node(test_node)
+    rate = test_node.create_rate(10)
+
+    spin_thread = threading.Thread(target=executor.spin, args=())
+    spin_thread.start()
+
+    frame_received = False
+    while rclpy.ok() and elapsed_time < 2.0 and not frame_received:
+        fake_camera.publish_messages()
+        color_frame = camera.get_color_frame()
+        if color_frame is not None:
+            frame_received = True
+        rate.sleep()
+        elapsed_time = camera.get_clock().now().nanoseconds * 1e-9 - t_start
+
+    executor.shutdown()
+    spin_thread.join()
+
+    assert frame_received, "Color frame should have been received"
+    assert isinstance(camera.get_color_frame(), np.ndarray), "Color frame should be a NumPy array"
