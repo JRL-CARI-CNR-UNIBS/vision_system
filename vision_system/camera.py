@@ -112,7 +112,7 @@ class Camera(Node):
         post_processing_class = self.get_parameter('post_processing.class').get_parameter_value().string_value
 
         if post_processing_package and post_processing_module and post_processing_class:
-          self.get_logger().info(f'Load post processing module: {post_processing_package}')
+          self.get_logger().info(f'Load post processing module: {post_processing_module}')
           try:
             self.set_processing_function(post_processing_package, 
                                          post_processing_module, 
@@ -143,7 +143,7 @@ class Camera(Node):
             CameraInfo, self, self.camera_info_topic, time_to_wait=5.0
         )
       if not retrieved:
-        self.get_logger().error('Failed to retrieve camera info.')
+        self.get_logger().error(f'Failed to retrieve camera info: {self.camera_info_topic}.')
         return False
       self.get_logger().info('Camera info retrieved.')
       if self.post_processing is not None:
@@ -260,8 +260,6 @@ class Camera(Node):
 
       if self.post_processing is not None:
         self.post_processing.process_frame(self.color_frame)
-
-      return self.color_frame.copy(), self.distance_frame.copy()
 
     def start_acquire_only_color(self) -> None:
       """
