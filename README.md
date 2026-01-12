@@ -32,7 +32,7 @@ colcon build --symlink-install
 ## Usage
 
 ### Camera Node Class
-The Camera class serves as a ROS2 node and can be used both directly as a regular class with its [API](https://jrl-cari-cnr-unibs.github.io/vision_system/) methods or run as a ROS2 node. Below is a summary of the main API methods available in the class:
+The Camera class serves as a ROS2 node and can be used both directly as a regular class with its [API](https://jrl-cari-cnr-unibs.github.io/vision_system/vision_system.camera.html) methods or run as a ROS2 node. Below is a summary of the main API methods available in the class:
 
 It follows a table summarizing the main class API method.
 
