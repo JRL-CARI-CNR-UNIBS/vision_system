@@ -1,4 +1,3 @@
 rosbags
 pytest-dependency
 numpy
-opencv-python
