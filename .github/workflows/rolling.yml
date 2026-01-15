@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Setup ROS 2
-        uses: ros-tooling/setup-ros@0.7.0
+        uses: ros-tooling/action-ros-ci@v0.4
         with:
           required-ros-distributions: rolling
           
