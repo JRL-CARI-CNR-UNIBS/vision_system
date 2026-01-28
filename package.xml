@@ -7,6 +7,11 @@
   <maintainer email="samuele.sandrini@polito.it">kalman</maintainer>
   <license>Apache 2.0</license>
 
+  <depend>rclpy</depend>
+  <depend>cv_bridge</depend>
+  <depend>message_filters</depend>
+  <depend>sensor_msgs</depend>
+  
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
