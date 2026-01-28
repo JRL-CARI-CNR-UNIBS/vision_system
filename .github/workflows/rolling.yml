@@ -28,7 +28,7 @@ jobs:
           python3 -m pip install -r requirements.txt
             
       - name: build and test
-        uses: ros-tooling/action-ros-ci@v0.4
+        uses: ros-tooling/action-ros-ci@v0.3
         with:
           package-name: vision_system
           target-ros2-distro: rolling
