@@ -9,11 +9,9 @@ on:
       - main
 jobs:
   build-and-test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-22.04]
-      fail-fast: false
+    runs-on: ubuntu-22.04
+    container:
+      image: rostooling/setup-ros-docker:ubuntu-jammy-ros-humble-desktop-latest
 
     steps:
           
