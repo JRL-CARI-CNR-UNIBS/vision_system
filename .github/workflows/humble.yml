@@ -25,13 +25,6 @@ jobs:
         with:
           required-ros-distributions: humble
 
-      - name: Debug ROS Python
-        run: |
-          ls -la /opt/ros/humble || true
-          dpkg -l | grep -E "ros-humble-rclpy|ros-humble-desktop|ros-humble-ros-base" || true
-          source /opt/ros/humble/setup.bash
-          python3 -c "import sys; print(sys.executable); import rclpy; print('OK', rclpy.__file__)"
-
       - name: Checkout repository
         uses: actions/checkout@v3
 
