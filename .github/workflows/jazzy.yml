@@ -1,0 +1,37 @@
+name: jazzy
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+    container:
+      image: rostooling/setup-ros-docker:ubuntu-noble-ros-jazzy-desktop-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install python deps
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+
+      - name: Build and test
+        uses: ros-tooling/action-ros-ci@v0.4
+        with:
+          package-name: vision_system
+          target-ros2-distro: jazzy
+          colcon-defaults: |
+            {
+              "test": { "parallel-workers": 1 }
+            }
