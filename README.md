@@ -2,7 +2,7 @@
 [![GitHub Action
 Status](https://github.com/JRL-CARI-CNR-UNIBS/vision_system/workflows/humble/badge.svg)](https://github.com/JRL-CARI-CNR-UNIBS/vision_system)
 [![GitHub Action
-Status](https://github.com/JRL-CARI-CNR-UNIBS/vision_system/workflows/rolling/badge.svg)](https://github.com/JRL-CARI-CNR-UNIBS/vision_system)
+Status](https://github.com/JRL-CARI-CNR-UNIBS/vision_system/workflows/jazzy/badge.svg)](https://github.com/JRL-CARI-CNR-UNIBS/vision_system)
 [![codecov](https://codecov.io/gh/JRL-CARI-CNR-UNIBS/vision_system/branch/main/graph/badge.svg?token=9KOWUD6OHC)](https://codecov.io/gh/JRL-CARI-CNR-UNIBS/vision_system) 
 
 ## Overview
