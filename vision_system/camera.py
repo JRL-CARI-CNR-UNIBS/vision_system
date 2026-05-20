@@ -31,6 +31,7 @@ DEFAULT_COLOR_IMAGE_TOPIC = '/camera/color/image_raw'
 DEFAULT_DEPTH_IMAGE_TOPIC = '/camera/depth/image_raw'
 DEFAULT_CAMERA_INFO_TOPIC = '/camera/depth/camera_info'
 DEFAULT_FRAMES_APPROX_SYNC = False
+DEFAULT_COLOR_FRAME_ENCODING = 'bgr8'
 DEFAULT_DEPTH_FRAME_ENCODING = '32FC1'
 DEFAULT_DEPTH_UNIT_IN_METERS = True
 
@@ -51,6 +52,8 @@ class Camera(Node):
         The topic for camera information (default is '/camera/depth/camera_info').
     frames_approx_sync : bool, optional
         Whether to use approximate time synchronization (default is False).
+    color_frame_encoding : str, optional
+        The encoding of the color frame (default is 'bgr8').
     depth_frame_encoding : str, optional
         The encoding of the depth frame (default is '32FC1').
     """
@@ -60,6 +63,7 @@ class Camera(Node):
                  depth_image_topic: str = DEFAULT_DEPTH_IMAGE_TOPIC, 
                  camera_info_topic: str = DEFAULT_CAMERA_INFO_TOPIC, 
                  frames_approx_sync: bool = DEFAULT_FRAMES_APPROX_SYNC,
+                 color_frame_encoding: str = DEFAULT_COLOR_FRAME_ENCODING,
                  depth_frame_encoding: str = DEFAULT_DEPTH_FRAME_ENCODING,
                  depth_unit_in_meters: bool = DEFAULT_DEPTH_UNIT_IN_METERS
                  ):
@@ -71,8 +75,9 @@ class Camera(Node):
         self.declare_parameter('depth_image_topic', depth_image_topic)
         self.declare_parameter('camera_info_topic', camera_info_topic)
         self.declare_parameter('frames_approx_sync', frames_approx_sync)
+        self.declare_parameter('color_frame_encoding', color_frame_encoding)
         self.declare_parameter('depth_frame_encoding', depth_frame_encoding)
-        self.declare_parameter('depth_unit_in_meters', DEFAULT_DEPTH_UNIT_IN_METERS)
+        self.declare_parameter('depth_unit_in_meters', depth_unit_in_meters)
         self.declare_parameter('post_processing.package', '')
         self.declare_parameter('post_processing.module', '')
         self.declare_parameter('post_processing.class', '')
@@ -82,6 +87,7 @@ class Camera(Node):
         self.depth_image_topic = self.get_parameter('depth_image_topic').get_parameter_value().string_value
         self.camera_info_topic = self.get_parameter('camera_info_topic').get_parameter_value().string_value
         self.frames_approx_sync = self.get_parameter('frames_approx_sync').get_parameter_value().bool_value
+        self.color_frame_encoding = self.get_parameter('color_frame_encoding').get_parameter_value().string_value
         self.depth_frame_encoding = self.get_parameter('depth_frame_encoding').get_parameter_value().string_value
         self.depth_unit_in_meters = self.get_parameter('depth_unit_in_meters').get_parameter_value().bool_value
 
@@ -122,7 +128,7 @@ class Camera(Node):
 
     def _convert_frames(self, color_frame: Image, depth_frame: Image) -> bool:
       try:
-        self.color_frame = self._cv_bridge.imgmsg_to_cv2(color_frame, desired_encoding='passthrough')
+        self.color_frame = self._cv_bridge.imgmsg_to_cv2(color_frame, desired_encoding=self.color_frame_encoding)
         self.depth_frame = self._cv_bridge.imgmsg_to_cv2(depth_frame, desired_encoding='passthrough')
         self.distance_frame = self._cv_bridge.imgmsg_to_cv2(depth_frame, desired_encoding=self.depth_frame_encoding)
       except CvBridgeError as e:
@@ -165,7 +171,7 @@ class Camera(Node):
         return None
       
       try:
-        self.color_frame = self._cv_bridge.imgmsg_to_cv2(color_frame, desired_encoding="passthrough")
+        self.color_frame = self._cv_bridge.imgmsg_to_cv2(color_frame, desired_encoding=self.color_frame_encoding)
       except CvBridgeError as e:
         self.get_logger().error(f'Error converting image: {e}')
         return None
@@ -253,7 +259,7 @@ class Camera(Node):
 
     def _process_color_frame(self, color_frame: Image):
       try:
-        self.color_frame = self._cv_bridge.imgmsg_to_cv2(color_frame, desired_encoding="passthrough")
+        self.color_frame = self._cv_bridge.imgmsg_to_cv2(color_frame, desired_encoding=self.color_frame_encoding)
       except CvBridgeError as e:
         self.get_logger().error(f'Error converting image: {e}')
         return None
