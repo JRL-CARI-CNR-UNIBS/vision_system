@@ -17,6 +17,7 @@
 import cv2
 from sensor_msgs.msg import CameraInfo
 import numpy as np
+from pathlib import Path
 
 def deproject_pixel_to_point(pixel, distance, camera_info: CameraInfo):
   """
@@ -46,3 +47,46 @@ def deproject_pixel_to_point(pixel, distance, camera_info: CameraInfo):
   x, y = undistorted_point[0][0]
 
   return (distance * x, distance * y, distance)
+
+def save_color_image(
+    image: np.ndarray,
+    path: str,
+    create_dirs: bool = True,
+) -> bool:
+    if image is None:
+        return False
+
+    output_path = Path(path)
+
+    if output_path.suffix.lower() not in [".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".tif"]:
+        return False
+
+    if create_dirs:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    try:
+        return cv2.imwrite(str(output_path), image)
+    except Exception:
+        return False
+    
+def save_depth_npy(
+    depth: np.ndarray,
+    path: str,
+    create_dirs: bool = True,
+) -> bool:
+    if depth is None:
+        return False
+
+    output_path = Path(path)
+
+    if output_path.suffix != ".npy":
+        output_path = output_path.with_suffix(".npy")
+
+    if create_dirs:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    try:
+        np.save(output_path, depth)
+        return True
+    except OSError:
+        return False

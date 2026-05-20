@@ -30,6 +30,7 @@ setup(
     entry_points={
         'console_scripts': [
           'vision_system_node = scripts.vision_system_node:main',
+          'save_frames_node = scripts.save_frames_node:main',
         ],
     },
 )
